@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">MavenLocalTest</string>
+    <string name="test_aar">test aar</string>
+    <string name="test_jar">test jar</string>
+</resources>

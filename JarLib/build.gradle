@@ -1,0 +1,46 @@
+plugins {
+    id 'java-library'
+    alias(libs.plugins.maven.publish)
+}
+
+java {
+    sourceCompatibility JavaVersion.VERSION_17
+    targetCompatibility JavaVersion.VERSION_17
+}
+
+// 发布配置
+afterEvaluate {
+    try {
+        publishing {
+            publications {
+                release(MavenPublication) { // 定义发布名称（如 release 或 debug）
+                    from components.java  // Java库使用
+                    groupId = "com.github.luotengyuan.MavenTest" // 组 ID
+                    artifactId = "JarLib" // 项目名称
+                    version = "1.0.0" // 版本号
+                    artifact sourcesJar // 添加源码发布配置
+                    artifact docJar // 添加源码发布配置
+                }
+            }
+
+            repositories {
+                maven {
+                    url = uri("${rootProject.projectDir}/repository") // 动态路径配置
+                }
+            }
+        }
+    } catch (Exception e) {
+        println "发布配置失败: ${e.message}" // 添加错误处理
+    }
+}
+
+tasks.register('sourcesJar', Jar) {
+    from sourceSets.main.allJava
+    archiveClassifier = 'sources'
+}
+
+tasks.register('docJar', Jar) {
+    dependsOn javadoc // 确保先执行javadoc任务
+    from javadoc.destinationDir // 使用javadoc生成的文档目录
+    archiveClassifier = 'javadoc' // 修改分类器标识
+}
